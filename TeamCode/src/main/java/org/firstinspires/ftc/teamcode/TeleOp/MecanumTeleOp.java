@@ -10,6 +10,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
     final double slidePower = 0.6;
+    final double SAFE_POSITION = 100.00;
+    final double TARGET_POSITION_REST = 0.0;
+
+    final double TARGET_POSITION_POSITION1 = 0.0;
+    final double TARGET_POSITION_POSITION2 = 0.0;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -25,6 +31,13 @@ public class MecanumTeleOp extends LinearOpMode {
         DcMotor slide1 = hardwareMap.dcMotor.get("slide1");
         DcMotor slide2 = hardwareMap.dcMotor.get("slide2");
 
+        // ORDER OF ACTUATION (MOVING THE ROBOT)
+        // 1. Intake (spin the entrapption stars shaft)
+        // 2. Move linear slide up to a certain distance so that when you turn the arm
+        //      it doesn't get caught in the intake (entrapption stars)
+        // 3. Rotate the left and right arms to deliver the pixel to the back of the robot
+        //      where the backdrop will be situated
+
 //        Slide slide = new Slide(hardwareMap);
 //        Intake intakeClass = new Intake(hardwareMap);
         boolean yWasPressed = false;
@@ -32,10 +45,31 @@ public class MecanumTeleOp extends LinearOpMode {
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
+
+        // DRIVE TRAIN INITIALIZATION
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+        // LINEAR SLIDES INITIALIZATION
+        slide1.setDirection(DcMotorSimple.Direction.FORWARD);
+        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        slide1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slide2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slide2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        // INTAKE INITIALIZATION
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        // ARMS INITIALIZATION
+        arm1.setDirection(Servo.Direction.FORWARD);
+        arm2.setDirection(Servo.Direction.REVERSE);
 
 
         waitForStart();
@@ -50,34 +84,46 @@ public class MecanumTeleOp extends LinearOpMode {
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
             String spinning;
-            if(gamepad1.left_bumper) {
+
+            if(gamepad1.left_bumper) { // Move the Intake (Entrapption Stars)
                intake.setPower(0.6);
+
                spinning = "in";
                telemetry.addData("IsServoSpinning", spinning);
                telemetry.update();
             }
             else if(gamepad1.right_bumper) {
                 intake.setPower(-0.6);
+
                 spinning = "out";
                 telemetry.addData("IsServoSpinning", spinning);
                 telemetry.update();
             }else{
-                intake.setPower(0.);
+                intake.setPower(0.0);
                 spinning = "no";
                 telemetry.addData("IsServoSpinning", spinning);
                 telemetry.update();
             }
-            if(gamepad1.dpad_up) {
-                actuate(slidePower);
+
+            if(gamepad1.dpad_up) {  // Move the slides in tandem
+                slide1.setTargetPosition(TARGET_POSITION1);
+                slide2.setPower(TARGET_POSITION1);
             }
             else if(gamepad1.dpad_down) {
-                actuate(-slidePower);
+                slide1.setPower(TARGET_POSITION2);
+                slide2.setPower(TARGET_POSITION2);
             }else {
-                actuate(0);
+                slide1.setPower(TARGET_POSITION_REST);
+                slide2.setPower(TARGET_POSITION_REST);
             }
-            if(gamepad1.a) {
-                arm1.setPosition(0.0);
-                arm2.setPosition(1.0);
+
+            if(gamepad1.a) { // Move the Arm Servos
+
+                if (slide1.getCurrentPosition() >= SAFE_POSITION){
+                    arm1.setPosition(0.0);
+                    arm2.setPosition(0.0);
+                }
+
             }
             if(gamepad1.b) {
                 arm1.setPosition(0.5);
@@ -85,10 +131,8 @@ public class MecanumTeleOp extends LinearOpMode {
             }
             if(gamepad1.y) {
                 arm1.setPosition(1.0);
-                arm2.setPosition(0.0);
+                arm2.setPosition(1.0);
             }
-
-
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             if(gamepad1.y){
@@ -100,6 +144,8 @@ public class MecanumTeleOp extends LinearOpMode {
             double frontRightPower;
             double backLeftPower;
             double backRightPower;
+
+            // MOVE DRIVE TRAIN
             if(yWasPressed) {
                 frontLeftPower = 0.5*((y + x + rx) / denominator);
                 backLeftPower = 0.5*((y - x + rx) / denominator);
@@ -111,6 +157,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 frontRightPower = (y - x - rx) / denominator;
                 backRightPower = (y + x - rx) / denominator;
             }
+
             frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
@@ -121,10 +168,5 @@ public class MecanumTeleOp extends LinearOpMode {
         }
     }
 
-    public void actuate(double power){
-        DcMotor slide1 = hardwareMap.dcMotor.get("slide1");
-        DcMotor slide2 = hardwareMap.dcMotor.get("slide2");
-        slide1.setPower(power);
-        slide2.setPower(power);
-    }
+
 }
