@@ -13,8 +13,8 @@ public class MecanumTeleOp extends LinearOpMode {
     final double SAFE_POSITION = 100.00;
     final double TARGET_POSITION_REST = 0.0;
 
-    final double TARGET_POSITION_POSITION1 = 0.0;
-    final double TARGET_POSITION_POSITION2 = 0.0;
+    final double TARGET_POSITION1 = 0.0;
+    final double TARGET_POSITION2 = 0.0;
 
 
     @Override
