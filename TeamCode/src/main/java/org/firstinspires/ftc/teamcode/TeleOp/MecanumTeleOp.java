@@ -9,12 +9,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
-    final double slidePower = 0.6;
-    final double SAFE_POSITION = 100.00;
-    final double TARGET_POSITION_REST = 0.0;
 
-    final double TARGET_POSITION1 = 0.0;
-    final double TARGET_POSITION2 = 0.0;
+    final double LINEAR_SLIDES_MOTOR_PPR = 384.5;
+    final double INCHES_PER_SPOOL_REVOLUTION = 3.9;
+    final double slidePower = 0.6;
+    final int SAFE_POSITION = 2 * INCHES_PER_SPOOL_REVOLUTION * LINEAR_SLIDES_MOTOR_PPR;
+    final int TARGET_POSITION_REST = 0.0;
+
+    final int TARGET_POSITION1 = SAFE_POSITION;
+    final int TARGET_POSITION2 = 0.0;
+
 
 
     @Override
