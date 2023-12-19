@@ -19,5 +19,7 @@ public class Intake {
 
         intake.setPower(spinOutPower);
     }
-
+    public void stop(HardwareMap hardwareMap) {
+        intake.setPower(0.);
+    }
 }

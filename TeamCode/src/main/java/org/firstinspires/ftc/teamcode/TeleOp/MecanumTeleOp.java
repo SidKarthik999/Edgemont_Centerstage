@@ -7,12 +7,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.libs.Intake;
-import org.firstinspires.ftc.teamcode.libs.Slide;
-
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
     final double slidePower = 0.6;
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -24,9 +22,12 @@ public class MecanumTeleOp extends LinearOpMode {
         CRServo intake = hardwareMap.crservo.get("intake");
         Servo arm1 = hardwareMap.servo.get("arm1");
         Servo arm2 = hardwareMap.servo.get("arm2");
-        Slide slide = new Slide(hardwareMap);
-        Intake intakeClass = new Intake(hardwareMap);
+        DcMotor slide1 = hardwareMap.dcMotor.get("slide1");
+        DcMotor slide2 = hardwareMap.dcMotor.get("slide2");
 
+//        Slide slide = new Slide(hardwareMap);
+//        Intake intakeClass = new Intake(hardwareMap);
+        boolean yWasPressed = false;
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
@@ -35,6 +36,7 @@ public class MecanumTeleOp extends LinearOpMode {
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         waitForStart();
 
@@ -47,30 +49,82 @@ public class MecanumTeleOp extends LinearOpMode {
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
-            if(gamepad2.left_bumper) {
-               intakeClass.spinOut(hardwareMap);
+            String spinning;
+            if(gamepad1.left_bumper) {
+               intake.setPower(0.6);
+               spinning = "in";
+               telemetry.addData("IsServoSpinning", spinning);
+               telemetry.update();
             }
-            if(gamepad2.right_bumper) {
-                intakeClass.spinIn(hardwareMap);
+            else if(gamepad1.right_bumper) {
+                intake.setPower(-0.6);
+                spinning = "out";
+                telemetry.addData("IsServoSpinning", spinning);
+                telemetry.update();
+            }else{
+                intake.setPower(0.);
+                spinning = "no";
+                telemetry.addData("IsServoSpinning", spinning);
+                telemetry.update();
             }
             if(gamepad1.dpad_up) {
-                slide.actuate(slidePower);
+                actuate(slidePower);
             }
             else if(gamepad1.dpad_down) {
-                slide.actuate(-slidePower);
+                actuate(-slidePower);
             }else {
-                slide.actuate(0);
+                actuate(0);
             }
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
+            if(gamepad1.a) {
+                arm1.setPosition(0.0);
+                arm2.setPosition(1.0);
+            }
+            if(gamepad1.b) {
+                arm1.setPosition(0.5);
+                arm2.setPosition(0.5);
+            }
+            if(gamepad1.y) {
+                arm1.setPosition(1.0);
+                arm2.setPosition(0.0);
+            }
 
+
+
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            if(gamepad1.y){
+                yWasPressed = !yWasPressed;
+                telemetry.addData("Slow Mode On: ", yWasPressed);
+                telemetry.update();
+            }
+            double frontLeftPower;
+            double frontRightPower;
+            double backLeftPower;
+            double backRightPower;
+            if(yWasPressed) {
+                frontLeftPower = 0.5*((y + x + rx) / denominator);
+                backLeftPower = 0.5*((y - x + rx) / denominator);
+                frontRightPower = 0.5*((y - x - rx) / denominator);
+                backRightPower = 0.5*((y + x - rx) / denominator);
+            }else{
+                frontLeftPower = (y + x + rx) / denominator;
+                backLeftPower = (y - x + rx) / denominator;
+                frontRightPower = (y - x - rx) / denominator;
+                backRightPower = (y + x - rx) / denominator;
+            }
             frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
+            telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
+            telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
+            telemetry.update();
         }
+    }
+
+    public void actuate(double power){
+        DcMotor slide1 = hardwareMap.dcMotor.get("slide1");
+        DcMotor slide2 = hardwareMap.dcMotor.get("slide2");
+        slide1.setPower(power);
+        slide2.setPower(power);
     }
 }
