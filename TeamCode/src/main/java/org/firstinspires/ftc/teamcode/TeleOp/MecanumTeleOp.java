@@ -112,14 +112,20 @@ public class MecanumTeleOp extends LinearOpMode {
             if(gamepad1.dpad_up) {  // Move the slides in tandem
 
                 slide1.setTargetPosition(TARGET_POSITION1);
-                slide2.setPower(TARGET_POSITION1);
+                slide2.setTargetPosition(TARGET_POSITION1);
+                slide1.setPower(0.2);
+                slide2.setPower(0.2);
             }
             else if(gamepad1.dpad_down) {
-                slide1.setPower(TARGET_POSITION2);
-                slide2.setPower(TARGET_POSITION2);
+                slide1.setTargetPosition(TARGET_POSITION2);
+                slide2.setTargetPosition(TARGET_POSITION2);
+                slide1.setPower(0.2);
+                slide2.setPower(0.2);
             }else {
-                slide1.setPower(TARGET_POSITION_REST);
-                slide2.setPower(TARGET_POSITION_REST);
+                slide1.setTargetPosition(TARGET_POSITION_REST);
+                slide2.setTargetPosition(TARGET_POSITION_REST);
+                slide1.setPower(0.2);
+                slide2.setPower(0.2);
             }
 
             if(gamepad1.a) { // Move the Arm Servos
