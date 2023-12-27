@@ -13,7 +13,7 @@ public class MecanumTeleOp extends LinearOpMode {
     final double LINEAR_SLIDES_MOTOR_PPR = 384.5;
     final double INCHES_PER_SPOOL_REVOLUTION = 3.9;
     final double slidePower = 0.6;
-    final int SAFE_POSITION = (int)(2 * INCHES_PER_SPOOL_REVOLUTION * LINEAR_SLIDES_MOTOR_PPR);
+    final int SAFE_POSITION = (int)(LINEAR_SLIDES_MOTOR_PPR);
     final int TARGET_POSITION_REST = 0;
 
     final int TARGET_POSITION1 = SAFE_POSITION;
@@ -113,17 +113,23 @@ public class MecanumTeleOp extends LinearOpMode {
 
                 slide1.setTargetPosition(TARGET_POSITION1);
                 slide2.setTargetPosition(TARGET_POSITION1);
+                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slide1.setPower(0.2);
                 slide2.setPower(0.2);
             }
             else if(gamepad1.dpad_down) {
                 slide1.setTargetPosition(TARGET_POSITION2);
                 slide2.setTargetPosition(TARGET_POSITION2);
+                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slide1.setPower(0.2);
                 slide2.setPower(0.2);
             }else {
                 slide1.setTargetPosition(TARGET_POSITION_REST);
                 slide2.setTargetPosition(TARGET_POSITION_REST);
+                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slide1.setPower(0.2);
                 slide2.setPower(0.2);
             }
