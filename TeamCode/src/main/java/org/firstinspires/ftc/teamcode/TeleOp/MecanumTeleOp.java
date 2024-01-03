@@ -13,7 +13,7 @@ public class MecanumTeleOp extends LinearOpMode {
     final double LINEAR_SLIDES_MOTOR_PPR = 384.5;
     final double INCHES_PER_SPOOL_REVOLUTION = 3.9;
     final double slidePower = 0.6;
-    final int SAFE_POSITION = (int)(LINEAR_SLIDES_MOTOR_PPR);
+    final int SAFE_POSITION = (int)(LINEAR_SLIDES_MOTOR_PPR/2);
     final int TARGET_POSITION_REST = 0;
 
     final int TARGET_POSITION1 = SAFE_POSITION;
@@ -25,15 +25,16 @@ public class MecanumTeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Declare our motors
         // Make sure your ID's match your configuration
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("LeftFront");
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get("LeftBack");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("RightFront");
-        DcMotor backRightMotor = hardwareMap.dcMotor.get("RightBack");
-        CRServo intake = hardwareMap.crservo.get("intake");
-        Servo arm1 = hardwareMap.servo.get("arm1");
-        Servo arm2 = hardwareMap.servo.get("arm2");
-        DcMotor slide1 = hardwareMap.dcMotor.get("slide1");
-        DcMotor slide2 = hardwareMap.dcMotor.get("slide2");
+        DcMotor frontLeftMotor = hardwareMap.get(DcMotor.class, "LeftFront");
+        DcMotor backLeftMotor = hardwareMap.get(DcMotor.class,"LeftBack");
+        DcMotor frontRightMotor = hardwareMap.get(DcMotor.class, "RightFront");
+        DcMotor backRightMotor = hardwareMap.get(DcMotor.class,"RightBack");
+//        Servo intake = hardwareMap.get(Servo.class, "intake");
+        CRServo intake = hardwareMap.get(CRServo.class, "intake");
+        Servo arm1 = hardwareMap.get(Servo.class, "arm1");
+        Servo arm2 = hardwareMap.get(Servo.class, "arm2");
+        DcMotor slide1 = hardwareMap.get(DcMotor.class,"slide1");
+        DcMotor slide2 = hardwareMap.get(DcMotor.class,"slide2");
 
         // ORDER OF ACTUATION (MOVING THE ROBOT)
         // 1. Intake (spin the entrapption stars shaft)
@@ -59,17 +60,33 @@ public class MecanumTeleOp extends LinearOpMode {
 
         // LINEAR SLIDES INITIALIZATION
         slide1.setDirection(DcMotorSimple.Direction.FORWARD);
-        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide2.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        slide1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slide2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //slide1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //slide2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slide2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         // INTAKE INITIALIZATION
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+//        intake.setDirection(Servo.Direction.FORWARD);
+        intake.setDirection(CRServo.Direction.FORWARD);
 
         // ARMS INITIALIZATION
         arm1.setDirection(Servo.Direction.FORWARD);
@@ -90,48 +107,53 @@ public class MecanumTeleOp extends LinearOpMode {
             String spinning;
 
             if(gamepad1.left_bumper) { // Move the Intake (Entrapption Stars)
-               intake.setPower(0.6);
+               intake.setPower(-5);
 
                spinning = "in";
-               telemetry.addData("IsServoSpinning", spinning);
-               telemetry.update();
+//               telemetry.addData("IsServoSpinning", spinning);
+//               telemetry.update();
             }
             else if(gamepad1.right_bumper) {
-                intake.setPower(-0.6);
+                intake.setPower(-5);
 
                 spinning = "out";
-                telemetry.addData("IsServoSpinning", spinning);
-                telemetry.update();
-            }else{
+//                telemetry.addData("IsServoSpinning", spinning);
+//                telemetry.update();
+            }
+            else{
                 intake.setPower(0.0);
                 spinning = "no";
-                telemetry.addData("IsServoSpinning", spinning);
-                telemetry.update();
+//                telemetry.addData("IsServoSpinning", spinning);
+//                telemetry.update();
             }
 
             if(gamepad1.dpad_up) {  // Move the slides in tandem
 
-                slide1.setTargetPosition(TARGET_POSITION1);
-                slide2.setTargetPosition(TARGET_POSITION1);
-                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide1.setPower(0.2);
-                slide2.setPower(0.2);
+//                slide1.setTargetPosition(TARGET_POSITION1);
+//                slide2.setTargetPosition(TARGET_POSITION1);
+//                sleep(500);
+//                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide1.setPower(0.35);
+                slide2.setPower(0.35);
             }
             else if(gamepad1.dpad_down) {
-                slide1.setTargetPosition(TARGET_POSITION2);
-                slide2.setTargetPosition(TARGET_POSITION2);
-                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide1.setPower(0.2);
-                slide2.setPower(0.2);
+
+//                slide1.setTargetPosition(TARGET_POSITION2);
+//                slide2.setTargetPosition(TARGET_POSITION2);
+//                sleep(500);
+//                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide1.setPower(-0.35);
+                slide2.setPower(-0.35);
             }else {
-                slide1.setTargetPosition(TARGET_POSITION_REST);
-                slide2.setTargetPosition(TARGET_POSITION_REST);
-                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide1.setPower(0.2);
-                slide2.setPower(0.2);
+//                slide1.setTargetPosition(TARGET_POSITION_REST);
+//                slide2.setTargetPosition(TARGET_POSITION_REST);
+//                sleep(500);
+//                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide1.setPower(0.0);
+                slide2.setPower(0.0);
             }
 
             if(gamepad1.a) { // Move the Arm Servos
@@ -149,6 +171,8 @@ public class MecanumTeleOp extends LinearOpMode {
             if(gamepad1.y) {
                 arm1.setPosition(1.0);
                 arm2.setPosition(1.0);
+
+                telemetry.update();
             }
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
