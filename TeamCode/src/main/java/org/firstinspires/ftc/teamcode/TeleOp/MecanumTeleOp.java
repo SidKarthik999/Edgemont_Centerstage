@@ -4,14 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
 
     final double LINEAR_SLIDES_MOTOR_PPR = 384.5;
-    final double INCHES_PER_SPOOL_REVOLUTION = 3.9;
+    final double INCHES_PER_SPOOL_REVOLUTION = 3.77;
     final double slidePower = 0.6;
     final int SAFE_POSITION = (int)(LINEAR_SLIDES_MOTOR_PPR/2);
     final int TARGET_POSITION_REST = 0;
@@ -25,16 +28,16 @@ public class MecanumTeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Declare our motors
         // Make sure your ID's match your configuration
-        DcMotor frontLeftMotor = hardwareMap.get(DcMotor.class, "LeftFront");
-        DcMotor backLeftMotor = hardwareMap.get(DcMotor.class,"LeftBack");
-        DcMotor frontRightMotor = hardwareMap.get(DcMotor.class, "RightFront");
-        DcMotor backRightMotor = hardwareMap.get(DcMotor.class,"RightBack");
+        DcMotorImplEx frontLeftMotor = hardwareMap.get(DcMotorImplEx.class, "LeftFront");
+        DcMotorImplEx backLeftMotor = hardwareMap.get(DcMotorImplEx.class,"LeftBack");
+        DcMotorImplEx frontRightMotor = hardwareMap.get(DcMotorImplEx.class, "RightFront");
+        DcMotorImplEx backRightMotor = hardwareMap.get(DcMotorImplEx.class,"RightBack");
 //        Servo intake = hardwareMap.get(Servo.class, "intake");
         CRServo intake = hardwareMap.get(CRServo.class, "intake");
         Servo arm1 = hardwareMap.get(Servo.class, "arm1");
         Servo arm2 = hardwareMap.get(Servo.class, "arm2");
-        DcMotor slide1 = hardwareMap.get(DcMotor.class,"slide1");
-        DcMotor slide2 = hardwareMap.get(DcMotor.class,"slide2");
+        DcMotorImplEx slide1 = hardwareMap.get(DcMotorImplEx.class,"slide1");
+        DcMotorImplEx slide2 = hardwareMap.get(DcMotorImplEx.class,"slide2");
 
         // ORDER OF ACTUATION (MOVING THE ROBOT)
         // 1. Intake (spin the entrapption stars shaft)
@@ -46,6 +49,7 @@ public class MecanumTeleOp extends LinearOpMode {
 //        Slide slide = new Slide(hardwareMap);
 //        Intake intakeClass = new Intake(hardwareMap);
         boolean yWasPressed = false;
+        boolean somethingSlide = false;
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
@@ -59,30 +63,18 @@ public class MecanumTeleOp extends LinearOpMode {
 
 
         // LINEAR SLIDES INITIALIZATION
-        slide1.setDirection(DcMotorSimple.Direction.FORWARD);
+        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
         slide2.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //slide1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //slide2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
+        slide1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slide2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slide2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
 
         // INTAKE INITIALIZATION
 //        intake.setDirection(Servo.Direction.FORWARD);
@@ -128,33 +120,39 @@ public class MecanumTeleOp extends LinearOpMode {
             }
 
             if(gamepad1.dpad_up) {  // Move the slides in tandem
-
-//                slide1.setTargetPosition(TARGET_POSITION1);
-//                slide2.setTargetPosition(TARGET_POSITION1);
-//                sleep(500);
-//                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide1.setPower(0.35);
-                slide2.setPower(0.35);
+                slide1.setTargetPosition(385);
+                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide2.setTargetPosition(385);
+                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide1.setVelocity(384.5);
+                slide2.setVelocity(384.5);
+                telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
+                telemetry.addData("Current of Slide 1: ", slide1.getCurrent(CurrentUnit.MILLIAMPS));
+                telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
+                telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
             }
             else if(gamepad1.dpad_down) {
 
-//                slide1.setTargetPosition(TARGET_POSITION2);
-//                slide2.setTargetPosition(TARGET_POSITION2);
-//                sleep(500);
-//                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide1.setPower(-0.35);
-                slide2.setPower(-0.35);
-            }else {
-//                slide1.setTargetPosition(TARGET_POSITION_REST);
-//                slide2.setTargetPosition(TARGET_POSITION_REST);
-//                sleep(500);
-//                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide1.setPower(0.0);
-                slide2.setPower(0.0);
+                slide1.setTargetPosition(0);
+                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide2.setTargetPosition(0);
+                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide1.setVelocity(384.5);
+                slide2.setVelocity(384.5);
+                telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
+                telemetry.addData("Current of Slide 1: ", slide1.getCurrent(CurrentUnit.MILLIAMPS));
+                telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
+                telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
             }
+//            }else {
+////                slide1.setTargetPosition(TARGET_POSITION_REST);
+////                slide2.setTargetPosition(TARGET_POSITION_REST);
+////                sleep(500);
+////                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+////                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                slide1.setVelocity(0.0);
+//                slide2.setVelocity(0.0);
+//            }
 
             if(gamepad1.a) { // Move the Arm Servos
 
@@ -167,6 +165,7 @@ public class MecanumTeleOp extends LinearOpMode {
             if(gamepad1.b) {
                 arm1.setPosition(0.5);
                 arm2.setPosition(0.5);
+                somethingSlide=false;
             }
             if(gamepad1.y) {
                 arm1.setPosition(1.0);
@@ -174,7 +173,6 @@ public class MecanumTeleOp extends LinearOpMode {
 
                 telemetry.update();
             }
-
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             if(gamepad1.y){
                 yWasPressed = !yWasPressed;
@@ -205,6 +203,8 @@ public class MecanumTeleOp extends LinearOpMode {
             backRightMotor.setPower(backRightPower);
             telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
             telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
+            telemetry.addData("Power of Slide One: ", slide1.getVelocity());
+            telemetry.addData("Power of Slide Two: ", slide2.getVelocity());
             telemetry.update();
         }
     }
