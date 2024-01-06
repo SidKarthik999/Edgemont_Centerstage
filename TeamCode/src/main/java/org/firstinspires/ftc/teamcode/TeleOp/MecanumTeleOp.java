@@ -16,13 +16,16 @@ public class MecanumTeleOp extends LinearOpMode {
     final double LINEAR_SLIDES_MOTOR_PPR = 384.5;
     final double INCHES_PER_SPOOL_REVOLUTION = 3.77;
     final double slidePower = 0.6;
-    final int SAFE_POSITION = (int)(LINEAR_SLIDES_MOTOR_PPR/2);
+
     final int TARGET_POSITION_REST = 0;
-
+    final int SLIDE_TICKS_PER_INCH = (int) Math.round(LINEAR_SLIDES_MOTOR_PPR/INCHES_PER_SPOOL_REVOLUTION);
+    final int SAFE_POSITION = (int)(SLIDE_TICKS_PER_INCH*2);
+    final int FIRST_BACKDROP_MARK = (int)(SLIDE_TICKS_PER_INCH*5);
+    final int SECOND_BACKDROP_MARK = (int)(SLIDE_TICKS_PER_INCH*12);
+    final int THIRD_BACKDROP_MARK = (int)(SLIDE_TICKS_PER_INCH*21);
+    final double SAFE_SLIDE_VELOCITY = (double)(384.5);
     final int TARGET_POSITION1 = SAFE_POSITION;
-    final int TARGET_POSITION2 = 0;
-
-
+    final int TARGET_POSITION2 = 385*2;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -49,7 +52,6 @@ public class MecanumTeleOp extends LinearOpMode {
 //        Slide slide = new Slide(hardwareMap);
 //        Intake intakeClass = new Intake(hardwareMap);
         boolean yWasPressed = false;
-        boolean somethingSlide = false;
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
@@ -99,14 +101,14 @@ public class MecanumTeleOp extends LinearOpMode {
             String spinning;
 
             if(gamepad1.left_bumper) { // Move the Intake (Entrapption Stars)
-               intake.setPower(-5);
+               intake.setPower(-0.5);
 
                spinning = "in";
 //               telemetry.addData("IsServoSpinning", spinning);
 //               telemetry.update();
             }
             else if(gamepad1.right_bumper) {
-                intake.setPower(-5);
+                intake.setPower(0.5);
 
                 spinning = "out";
 //                telemetry.addData("IsServoSpinning", spinning);
@@ -120,12 +122,12 @@ public class MecanumTeleOp extends LinearOpMode {
             }
 
             if(gamepad1.dpad_up) {  // Move the slides in tandem
-                slide1.setTargetPosition(385);
+                slide1.setTargetPosition(THIRD_BACKDROP_MARK);
                 slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide2.setTargetPosition(385);
+                slide2.setTargetPosition(THIRD_BACKDROP_MARK);
                 slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide1.setVelocity(384.5);
-                slide2.setVelocity(384.5);
+                slide1.setVelocity(SAFE_SLIDE_VELOCITY);
+                slide2.setVelocity(SAFE_SLIDE_VELOCITY);
                 telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
                 telemetry.addData("Current of Slide 1: ", slide1.getCurrent(CurrentUnit.MILLIAMPS));
                 telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
@@ -137,8 +139,34 @@ public class MecanumTeleOp extends LinearOpMode {
                 slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slide2.setTargetPosition(0);
                 slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide1.setVelocity(384.5);
-                slide2.setVelocity(384.5);
+                slide1.setVelocity(SAFE_SLIDE_VELOCITY);
+                slide2.setVelocity(SAFE_SLIDE_VELOCITY);
+                telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
+                telemetry.addData("Current of Slide 1: ", slide1.getCurrent(CurrentUnit.MILLIAMPS));
+                telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
+                telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
+            }
+            else if(gamepad1.dpad_right) {
+
+                slide1.setTargetPosition(SAFE_POSITION);
+                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide2.setTargetPosition(SAFE_POSITION);
+                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide1.setVelocity(SAFE_SLIDE_VELOCITY);
+                slide2.setVelocity(SAFE_SLIDE_VELOCITY);
+                telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
+                telemetry.addData("Current of Slide 1: ", slide1.getCurrent(CurrentUnit.MILLIAMPS));
+                telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
+                telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
+            }
+            else if(gamepad1.dpad_left) {
+
+                slide1.setTargetPosition(SECOND_BACKDROP_MARK);
+                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide2.setTargetPosition(SECOND_BACKDROP_MARK);
+                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide1.setVelocity(SAFE_SLIDE_VELOCITY);
+                slide2.setVelocity(SAFE_SLIDE_VELOCITY);
                 telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
                 telemetry.addData("Current of Slide 1: ", slide1.getCurrent(CurrentUnit.MILLIAMPS));
                 telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
@@ -165,7 +193,6 @@ public class MecanumTeleOp extends LinearOpMode {
             if(gamepad1.b) {
                 arm1.setPosition(0.5);
                 arm2.setPosition(0.5);
-                somethingSlide=false;
             }
             if(gamepad1.y) {
                 arm1.setPosition(1.0);
