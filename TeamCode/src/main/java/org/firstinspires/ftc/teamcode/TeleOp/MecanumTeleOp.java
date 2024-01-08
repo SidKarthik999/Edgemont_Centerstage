@@ -172,6 +172,18 @@ public class MecanumTeleOp extends LinearOpMode {
                 telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
                 telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
             }
+            else if(gamepad1.left_stick_button) {
+                slide1.setTargetPosition(100*2);
+                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide2.setTargetPosition(100*2);
+                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide1.setVelocity(SAFE_SLIDE_VELOCITY);
+                slide2.setVelocity(SAFE_SLIDE_VELOCITY);
+                telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
+                telemetry.addData("Current of Slide 1: ", slide1.getCurrent(CurrentUnit.MILLIAMPS));
+                telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
+                telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
+            }
 //            }else {
 ////                slide1.setTargetPosition(TARGET_POSITION_REST);
 ////                slide2.setTargetPosition(TARGET_POSITION_REST);
