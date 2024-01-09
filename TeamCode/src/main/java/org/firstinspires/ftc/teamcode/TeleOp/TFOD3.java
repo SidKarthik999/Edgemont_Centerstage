@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -23,7 +24,10 @@ import java.util.List;
 public class TFOD3 extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-
+    private static final String[] LABELS = {
+            "red_prop",
+            "blue_prop"
+    };
     /**
      * {@link #tfod} is the variable to store our instance of the TensorFlow Object Detection processor.
      */
@@ -80,10 +84,10 @@ public class TFOD3 extends LinearOpMode {
 
                 // Use setModelAssetName() if the TF Model is built in as an asset.
                 // Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-                //.setModelAssetName(TFOD_MODEL_ASSET)
-                .setModelFileName("/Users/siddanthkarthik/Desktop/Edgemont_Centerstage/FtcRobotController/src/main/assets/model_20240108_152249.tflite")
+//                .setModelAssetName("model_20240108_155735.tflite")
+//                .setModelFileName("model_20240108_155735.tflite")
 
-                //.setModelLabels(LABELS)
+                .setModelLabels(LABELS)
                 //.setIsModelTensorFlow2(true)
                 //.setIsModelQuantized(true)
                 //.setModelInputSize(300)
