@@ -23,6 +23,9 @@ import java.util.List;
 
 public class TFOD3 extends LinearOpMode {
 
+    final int LEFT_EXTREMITY = 125;
+    final int RIGHT_EXTREMITY = 515;
+
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     private static final String[] LABELS = {
             "red_left",
@@ -149,6 +152,25 @@ public class TFOD3 extends LinearOpMode {
         for (Recognition recognition : currentRecognitions) {
             double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
             double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
+
+            //IF prop.right < 125 ==> on LEFT
+            if (recognition.getRight() < LEFT_EXTREMITY) {
+                // Team Prop is on LEFT
+                // DO SOMETHING
+            }
+            else if (recognition.getLeft() > RIGHT_EXTREMITY) {
+                // Team Prop is on RIGHT
+                // DO SOMETHING
+            }
+            else {
+                // Team Prop is on RIGHT
+                // DO SOMETHING
+            }
+
+
+            //ELSE IF prop.left > 515 ==> on RIGHT
+            //ELSE it's in the CENTER
+
 
             telemetry.addData(""," ");
             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
