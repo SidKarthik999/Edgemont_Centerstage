@@ -25,8 +25,12 @@ public class TFOD3 extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     private static final String[] LABELS = {
-            "red_prop",
-            "blue_prop"
+            "red_left",
+            "red_right",
+            "red_center",
+            "blue_left",
+            "blue_right",
+            "blue_center"
     };
     /**
      * {@link #tfod} is the variable to store our instance of the TensorFlow Object Detection processor.
@@ -84,7 +88,7 @@ public class TFOD3 extends LinearOpMode {
 
                 // Use setModelAssetName() if the TF Model is built in as an asset.
                 // Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-//                .setModelAssetName("model_20240108_155735.tflite")
+                .setModelAssetName("model_20240109_174311.tflite")
 //                .setModelFileName("model_20240108_155735.tflite")
 
                 .setModelLabels(LABELS)

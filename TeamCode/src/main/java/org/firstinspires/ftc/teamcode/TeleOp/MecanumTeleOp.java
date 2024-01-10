@@ -85,6 +85,8 @@ public class MecanumTeleOp extends LinearOpMode {
         // ARMS INITIALIZATION
         arm1.setDirection(Servo.Direction.FORWARD);
         arm2.setDirection(Servo.Direction.REVERSE);
+        arm1.setPosition(0.02);
+        arm2.setPosition(0.02);
 
 
         waitForStart();
@@ -210,7 +212,6 @@ public class MecanumTeleOp extends LinearOpMode {
                 arm1.setPosition(1.0);
                 arm2.setPosition(1.0);
 
-                telemetry.update();
             }
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             if(gamepad1.y){
