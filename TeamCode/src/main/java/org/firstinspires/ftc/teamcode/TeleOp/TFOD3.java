@@ -110,7 +110,7 @@ public class TFOD3 extends LinearOpMode {
         }
 
         // Choose a camera resolution. Not all cameras support all resolutions.
-        //builder.setCameraResolution(new Size(640, 480));
+        // builder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
         //builder.enableCameraMonitoring(true);
@@ -142,13 +142,31 @@ public class TFOD3 extends LinearOpMode {
      */
     private void telemetryTfod() {
 
+        final int LEFT_EXTREMITY = 125;
+        final int RIGHT_EXTREMITY = 515;
+
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());
 
-        // Step through the list of recognitions and display info for each one.
+
         for (Recognition recognition : currentRecognitions) {
             double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
-            double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
+            double y = (recognition.getTop() + recognition.getBottom()) / 2 ;
+
+            //IF prop.right < 125 ==> on LEFT
+            if (recognition.getRight() < LEFT_EXTREMITY) {
+                telemetry.addData("Team Prop is on the Left", true);
+            }
+            else if (recognition.getLeft() > RIGHT_EXTREMITY) {
+                telemetry.addData("Team Prop is on the Right", true);
+                // Team Prop is on RIGHT
+                // DO SOMETHING
+            }
+            else {
+                telemetry.addData("Team Prop is on the Center", true);
+                // Team Prop is on CENTER
+                // DO SOMETHING
+            }
 
             telemetry.addData(""," ");
             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);

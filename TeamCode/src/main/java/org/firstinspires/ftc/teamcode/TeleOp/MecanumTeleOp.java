@@ -19,13 +19,16 @@ public class MecanumTeleOp extends LinearOpMode {
 
     final int TARGET_POSITION_REST = 0;
     final int SLIDE_TICKS_PER_INCH = (int) Math.round(LINEAR_SLIDES_MOTOR_PPR/INCHES_PER_SPOOL_REVOLUTION);
-    final int SAFE_POSITION = (int)(SLIDE_TICKS_PER_INCH*2);
+    final int SAFE_POSITION = (int)(SLIDE_TICKS_PER_INCH*8.5);
     final int FIRST_BACKDROP_MARK = (int)(SLIDE_TICKS_PER_INCH*5);
     final int SECOND_BACKDROP_MARK = (int)(SLIDE_TICKS_PER_INCH*12);
     final int THIRD_BACKDROP_MARK = (int)(SLIDE_TICKS_PER_INCH*21);
     final double SAFE_SLIDE_VELOCITY = (double)(384.5);
     final int TARGET_POSITION1 = SAFE_POSITION;
     final int TARGET_POSITION2 = 385*2;
+    final double DELIVERED_POSITION = 0.6;
+    final double INTAKE_POSITION = 0.055;
+    final double ARM_SAFE_POSITION = 0.25;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,6 +54,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
 //        Slide slide = new Slide(hardwareMap);
 //        Intake intakeClass = new Intake(hardwareMap);
+
         boolean yWasPressed = false;
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -85,8 +89,8 @@ public class MecanumTeleOp extends LinearOpMode {
         // ARMS INITIALIZATION
         arm1.setDirection(Servo.Direction.FORWARD);
         arm2.setDirection(Servo.Direction.REVERSE);
-        arm1.setPosition(0.02);
-        arm2.setPosition(0.02);
+        arm1.setPosition(INTAKE_POSITION);
+        arm2.setPosition(INTAKE_POSITION);
 
 
         waitForStart();
@@ -103,14 +107,14 @@ public class MecanumTeleOp extends LinearOpMode {
             String spinning;
 
             if(gamepad1.left_bumper) { // Move the Intake (Entrapption Stars)
-               intake.setPower(-0.5);
+               intake.setPower(-1.0);
 
                spinning = "in";
 //               telemetry.addData("IsServoSpinning", spinning);
 //               telemetry.update();
             }
             else if(gamepad1.right_bumper) {
-                intake.setPower(0.5);
+                intake.setPower(1.0);
 
                 spinning = "out";
 //                telemetry.addData("IsServoSpinning", spinning);
@@ -176,8 +180,8 @@ public class MecanumTeleOp extends LinearOpMode {
             }
             else if(gamepad1.left_stick_button) {
                 slide1.setTargetPosition(100*2);
-                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slide2.setTargetPosition(100*2);
+                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slide1.setVelocity(SAFE_SLIDE_VELOCITY);
                 slide2.setVelocity(SAFE_SLIDE_VELOCITY);
@@ -198,20 +202,29 @@ public class MecanumTeleOp extends LinearOpMode {
 
             if(gamepad1.a) { // Move the Arm Servos
 
-                if (slide1.getCurrentPosition() >= SAFE_POSITION){
-                    arm1.setPosition(0.0);
-                    arm2.setPosition(0.0);
-                }
+
+                    arm1.setPosition(INTAKE_POSITION);
+                    arm2.setPosition(INTAKE_POSITION);
 
             }
             if(gamepad1.b) {
-                arm1.setPosition(0.5);
-                arm2.setPosition(0.5);
+                if (slide1.getCurrentPosition() >= SAFE_POSITION){
+                    arm1.setPosition(DELIVERED_POSITION);
+                    arm2.setPosition(DELIVERED_POSITION);
+                }
             }
             if(gamepad1.y) {
-                arm1.setPosition(1.0);
-                arm2.setPosition(1.0);
+//                if (slide1.getCurrentPosition() >= SAFE_POSITION){
+                    arm1.setPosition(0.08);
+                    arm2.setPosition(0.08);
+//                }
 
+            }
+            if(gamepad1.x) {
+                if (slide1.getCurrentPosition() >= SAFE_POSITION){
+                    arm1.setPosition(ARM_SAFE_POSITION);
+                    arm2.setPosition(ARM_SAFE_POSITION);
+                }
             }
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             if(gamepad1.y){
