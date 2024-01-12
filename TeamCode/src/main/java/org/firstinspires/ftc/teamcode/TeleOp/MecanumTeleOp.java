@@ -30,6 +30,8 @@ public class MecanumTeleOp extends LinearOpMode {
     final double INTAKE_POSITION = 0.055;
     final double ARM_SAFE_POSITION = 0.25;
 
+    final int OPTIMAL_DROP_POSITION = (int) (SLIDE_TICKS_PER_INCH*3.0);
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -127,7 +129,7 @@ public class MecanumTeleOp extends LinearOpMode {
 //                telemetry.update();
             }
 
-            if(gamepad1.dpad_up) {  // Move the slides in tandem
+            if(gamepad2.dpad_up) {  // Move the slides in tandem
                 slide1.setTargetPosition(THIRD_BACKDROP_MARK);
                 slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 slide2.setTargetPosition(THIRD_BACKDROP_MARK);
@@ -139,7 +141,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
                 telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
             }
-            else if(gamepad1.dpad_down) {
+            else if(gamepad2.dpad_down) {
 
                 slide1.setTargetPosition(0);
                 slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -152,7 +154,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
                 telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
             }
-            else if(gamepad1.dpad_right) {
+            else if(gamepad2.dpad_right) {
 
                 slide1.setTargetPosition(SAFE_POSITION);
                 slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -165,7 +167,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
                 telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
             }
-            else if(gamepad1.dpad_left) {
+            else if(gamepad2.dpad_left) {
 
                 slide1.setTargetPosition(SECOND_BACKDROP_MARK);
                 slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -178,7 +180,20 @@ public class MecanumTeleOp extends LinearOpMode {
                 telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
                 telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
             }
-            else if(gamepad1.left_stick_button) {
+
+            else if(gamepad1.dpad_down) {
+                slide1.setTargetPosition(OPTIMAL_DROP_POSITION);
+                slide2.setTargetPosition(OPTIMAL_DROP_POSITION);
+                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                slide1.setVelocity(SAFE_SLIDE_VELOCITY);
+                slide2.setVelocity(SAFE_SLIDE_VELOCITY);
+                telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
+                telemetry.addData("Current of Slide 1: ", slide1.getCurrent(CurrentUnit.MILLIAMPS));
+                telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
+                telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
+            }
+            else if(gamepad2.left_stick_button) {
                 slide1.setTargetPosition(100*2);
                 slide2.setTargetPosition(100*2);
                 slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -200,27 +215,27 @@ public class MecanumTeleOp extends LinearOpMode {
 //                slide2.setVelocity(0.0);
 //            }
 
-            if(gamepad1.a) { // Move the Arm Servos
+            if(gamepad2.a) { // Move the Arm Servos
 
 
                     arm1.setPosition(INTAKE_POSITION);
                     arm2.setPosition(INTAKE_POSITION);
 
             }
-            if(gamepad1.b) {
-                if (slide1.getCurrentPosition() >= SAFE_POSITION){
+            if(gamepad2.b) {
+                if (slide1.getCurrentPosition() >= OPTIMAL_DROP_POSITION){
                     arm1.setPosition(DELIVERED_POSITION);
                     arm2.setPosition(DELIVERED_POSITION);
                 }
             }
-            if(gamepad1.y) {
+            if(gamepad2.y) {
 //                if (slide1.getCurrentPosition() >= SAFE_POSITION){
                     arm1.setPosition(0.08);
                     arm2.setPosition(0.08);
 //                }
 
             }
-            if(gamepad1.x) {
+            if(gamepad2.x) {
                 if (slide1.getCurrentPosition() >= SAFE_POSITION){
                     arm1.setPosition(ARM_SAFE_POSITION);
                     arm2.setPosition(ARM_SAFE_POSITION);

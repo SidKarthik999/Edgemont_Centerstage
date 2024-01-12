@@ -23,9 +23,6 @@ import java.util.List;
 
 public class TFOD3 extends LinearOpMode {
 
-    final int LEFT_EXTREMITY = 125;
-    final int RIGHT_EXTREMITY = 515;
-
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     private static final String[] LABELS = {
             "red_left",
@@ -133,7 +130,7 @@ public class TFOD3 extends LinearOpMode {
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        //tfod.setMinResultConfidence(0.75f);
+        tfod.setMinResultConfidence(0.55f);
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
@@ -157,10 +154,11 @@ public class TFOD3 extends LinearOpMode {
             double y = (recognition.getTop() + recognition.getBottom()) / 2 ;
 
             //IF prop.right < 125 ==> on LEFT
-            if (recognition.getRight() < LEFT_EXTREMITY) {
+            if ((recognition.getLeft()+recognition.getRight()/2) < LEFT_EXTREMITY) {
                 telemetry.addData("Team Prop is on the Left", true);
+
             }
-            else if (recognition.getLeft() > RIGHT_EXTREMITY) {
+            else if ((recognition.getLeft()+recognition.getRight()/2) > RIGHT_EXTREMITY) {
                 telemetry.addData("Team Prop is on the Right", true);
                 // Team Prop is on RIGHT
                 // DO SOMETHING
@@ -171,23 +169,6 @@ public class TFOD3 extends LinearOpMode {
                 // DO SOMETHING
             }
 
-            //IF prop.right < 125 ==> on LEFT
-            if (recognition.getRight() < LEFT_EXTREMITY) {
-                // Team Prop is on LEFT
-                // DO SOMETHING
-            }
-            else if (recognition.getLeft() > RIGHT_EXTREMITY) {
-                // Team Prop is on RIGHT
-                // DO SOMETHING
-            }
-            else {
-                // Team Prop is on RIGHT
-                // DO SOMETHING
-            }
-
-
-            //ELSE IF prop.left > 515 ==> on RIGHT
-            //ELSE it's in the CENTER
 
 
             telemetry.addData(""," ");
