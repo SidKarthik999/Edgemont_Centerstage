@@ -29,7 +29,7 @@ import java.util.List;
  */
 @Config
 @Autonomous(group = "drive")
-public class CompetitionAutoBlue extends LinearOpMode {
+public class CompetitionAutoRed extends LinearOpMode {
     public static double DISTANCE = 60; // in
     final double LINEAR_SLIDES_MOTOR_PPR = 384.5;
     final double INCHES_PER_SPOOL_REVOLUTION = 3.77;
@@ -92,20 +92,16 @@ public class CompetitionAutoBlue extends LinearOpMode {
 //                .strafeLeft(27*CONVERSION_FACTOR_DRIVE)
                 .build();
         Trajectory strafe = drive.trajectoryBuilder(new Pose2d())
-                .strafeLeft(53)
+                .strafeRight(53)
                 .build();
         Trajectory backwards = drive.trajectoryBuilder(new Pose2d())
                 .back(30)
                 .build();
         Trajectory spikeBackwards = drive.trajectoryBuilder(new Pose2d())
-                .back(4)
+                .back(6)
                 .build();
         Trajectory driveForwardMore = drive.trajectoryBuilder(new Pose2d())
                 .forward(4)
-                .build();
-        waitForStart();
-        Trajectory strafeLeft = drive.trajectoryBuilder(new Pose2d())
-                .strafeLeft(3)
                 .build();
         waitForStart();
 
@@ -124,7 +120,6 @@ public class CompetitionAutoBlue extends LinearOpMode {
 //        slide2.setVelocity(SAFE_SLIDE_VELOCITY);
         arm1.setPosition(0.05);
         arm2.setPosition(0.05);
-
         Thread.sleep(1000);
         drive.followTrajectory(driveForward);
         if(position.equals("left")){
@@ -134,7 +129,6 @@ public class CompetitionAutoBlue extends LinearOpMode {
             intake.setPower(1.0);
             Thread.sleep(1000);
             drive.followTrajectory(spikeBackwards);
-            drive.followTrajectory(strafeLeft);
             drive.turn(Math.toRadians(-120));
         }else if(position.equals("right")){
             drive.followTrajectory(driveForwardMore);
@@ -145,7 +139,7 @@ public class CompetitionAutoBlue extends LinearOpMode {
             drive.followTrajectory(spikeBackwards);
             drive.turn(Math.toRadians(120));
         }else{
-//            drive.followTrajectory(driveToSpikeMark);
+            drive.followTrajectory(driveToSpikeMark);
             intake.setPower(1.0);
             Thread.sleep(1000);
             drive.followTrajectory(spikeBackwards);
