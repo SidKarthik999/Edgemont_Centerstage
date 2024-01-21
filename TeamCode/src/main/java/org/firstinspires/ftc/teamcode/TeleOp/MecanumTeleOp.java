@@ -71,8 +71,8 @@ public class MecanumTeleOp extends LinearOpMode {
 
 
         // LINEAR SLIDES INITIALIZATION
-        slide1.setDirection(DcMotorSimple.Direction.FORWARD);
-        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide2.setDirection(DcMotorSimple.Direction.FORWARD);
         slide1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slide2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //slide1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
