@@ -22,8 +22,8 @@ public class MecanumTeleOp extends LinearOpMode {
     final int SAFE_POSITION = (int)(SLIDE_TICKS_PER_INCH*8.5);
     final int FIRST_BACKDROP_MARK = (int)(SLIDE_TICKS_PER_INCH*5);
     final int SECOND_BACKDROP_MARK = (int)(SLIDE_TICKS_PER_INCH*12);
-    final int THIRD_BACKDROP_MARK = (int)(SLIDE_TICKS_PER_INCH*21);
-    final double SAFE_SLIDE_VELOCITY = (double)(384.5);
+    final int THIRD_BACKDROP_MARK = (int)(SLIDE_TICKS_PER_INCH*18);
+    final double SAFE_SLIDE_VELOCITY = (double)(480.625);
     final int TARGET_POSITION1 = SAFE_POSITION;
     final int TARGET_POSITION2 = 385*2;
     final double DELIVERED_POSITION = 0.6;
@@ -181,18 +181,6 @@ public class MecanumTeleOp extends LinearOpMode {
                 telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
             }
 
-            else if(gamepad1.dpad_down) {
-                slide1.setTargetPosition(OPTIMAL_DROP_POSITION);
-                slide2.setTargetPosition(OPTIMAL_DROP_POSITION);
-                slide1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                slide1.setVelocity(SAFE_SLIDE_VELOCITY);
-                slide2.setVelocity(SAFE_SLIDE_VELOCITY);
-                telemetry.addData("Position of Slide One: ", slide1.getCurrentPosition());
-                telemetry.addData("Current of Slide 1: ", slide1.getCurrent(CurrentUnit.MILLIAMPS));
-                telemetry.addData("Position of Slide Two: ", slide2.getCurrentPosition());
-                telemetry.addData("Current of Slide 2: ", slide2.getCurrent(CurrentUnit.MILLIAMPS));
-            }
             else if(gamepad2.left_stick_button) {
                 slide1.setTargetPosition(100*2);
                 slide2.setTargetPosition(100*2);
@@ -216,7 +204,6 @@ public class MecanumTeleOp extends LinearOpMode {
 //            }
 
             if(gamepad2.a) { // Move the Arm Servos
-
 
                     arm1.setPosition(INTAKE_POSITION);
                     arm2.setPosition(INTAKE_POSITION);
