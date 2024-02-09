@@ -181,7 +181,7 @@ public class CompetitionAutoRed extends LinearOpMode {
 
                 // Use setModelAssetName() if the TF Model is built in as an asset.
                 // Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.
-                .setModelAssetName("model_20240113_072417.tflite")
+                .setModelAssetName("model_20240208_231618.tflite")
 //                .setModelFileName("model_20240108_155735.tflite")
 
                 .setModelLabels(LABELS)
